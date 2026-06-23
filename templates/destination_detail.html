@@ -1,0 +1,24 @@
+{% extends 'base.html' %}
+
+{% block title %}Destination Details - Family Trip Planner{% endblock %}
+
+{% block content %}
+<section class="container" style="padding:32px 0;">
+  <div class="glass" style="max-width:900px;margin:0 auto;">
+    {% if dest %}
+      <div style="display:grid;grid-template-columns:1fr 1fr;gap:24px;align-items:start;">
+        <img src="{{ dest.image }}" alt="{{ dest.title }}" style="width:100%;border-radius:18px;object-fit:cover;min-height:360px;">
+        <div>
+          <h2>{{ dest.title }}</h2>
+          <p class="text-muted">Category: {{ dest.category }} · Season: {{ dest.season }}</p>
+          <p>{{ dest.description }}</p>
+          <div class="meta" style="margin-top:16px;">Budget: ${{ dest.budget }} · Rating: {{ dest.rating }}</div>
+          <a class="btn" href="/planner" style="margin-top:18px;display:inline-block;">Plan this trip</a>
+        </div>
+      </div>
+    {% else %}
+      <p class="text-muted">Destination not found.</p>
+    {% endif %}
+  </div>
+</section>
+{% endblock %}

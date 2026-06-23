@@ -1,0 +1,22 @@
+{% extends 'base.html' %}
+{% block title %}Your Trips - Family Trip Planner{% endblock %}
+{% block content %}
+<section class="container" style="padding:28px 0;">
+  <h2>Your Trips</h2>
+  {% if trips %}
+    <div class="grid">
+      {% for t in trips %}
+        <article class="dest">
+          <div class="dest-body">
+            <h3>{{ t.destination }}</h3>
+            <p class="meta">{{ t.start_date }} → {{ t.end_date }} • Budget: ${{ t.budget }}</p>
+            <p>{{ t.notes }}</p>
+          </div>
+        </article>
+      {% endfor %}
+    </div>
+  {% else %}
+    <p class="text-muted">You have no trips. <a href="/add-trip">Create one now</a>.</p>
+  {% endif %}
+</section>
+{% endblock %}

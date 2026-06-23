@@ -1,0 +1,42 @@
+{% extends 'base.html' %}
+{% block title %}Dashboard - Family Trip Planner{% endblock %}
+{% block content %}
+<section class="container" style="padding:28px 0;">
+  <div class="glass">
+    <h2>Welcome, {{ session.get('user_name') }}</h2>
+    <p class="text-muted">Your trips and memories at a glance.</p>
+    <div style="margin-top:18px;display:flex;gap:12px;flex-wrap:wrap;">
+      <a class="btn" href="/add-trip">Add Trip</a>
+      <a class="btn ghost" href="/view-trips">View Trips</a>
+      <a class="btn" href="/logout">Logout</a>
+    </div>
+
+    <h3 style="margin-top:18px;">Recent Trips</h3>
+    {% if trips %}
+      <div class="grid">
+        {% for t in trips %}
+          <div class="card">
+            <strong>{{ t.destination }}</strong>
+            <div class="meta">{{ t.start_date }} → {{ t.end_date }} • Budget: ${{ t.budget }}</div>
+            <p>{{ t.notes }}</p>
+          </div>
+        {% endfor %}
+      </div>
+    {% else %}
+      <p class="text-muted">No trips found. Add your first trip.</p>
+    {% endif %}
+
+    <h3 style="margin-top:18px;">Recent Memories</h3>
+    <div class="grid">
+      {% for m in memories %}
+        <div class="card">
+          <img loading="lazy" src="{{ m.image_path or url_for('static', filename='images/hero.jpg') }}" alt="memory" style="width:100%;height:140px;object-fit:cover;border-radius:8px">
+          <p>{{ m.description }}</p>
+        </div>
+      {% else %}
+        <p class="text-muted">No memories yet.</p>
+      {% endfor %}
+    </div>
+  </div>
+</section>
+{% endblock %}

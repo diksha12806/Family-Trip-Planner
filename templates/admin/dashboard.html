@@ -1,0 +1,21 @@
+{% extends 'base.html' %}
+
+{% block title %}Admin Dashboard - Family Trip Planner{% endblock %}
+
+{% block content %}
+<section class="container" style="padding:32px 0;">
+  <div class="glass" style="max-width:900px;margin:0 auto;">
+    <h2>Admin Dashboard</h2>
+    <div style="display:grid;grid-template-columns:repeat(2,minmax(200px,1fr));gap:18px;margin-top:20px;">
+      <div class="card">
+        <strong>Destinations</strong>
+        <p>{{ stats.dest_count }}</p>
+      </div>
+      <div class="card">
+        <strong>Family records</strong>
+        <p>{{ stats.families }}</p>
+      </div>
+    </div>
+  </div>
+</section>
+{% endblock %}

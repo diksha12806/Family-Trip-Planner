@@ -1,0 +1,139 @@
+{% extends 'base.html' %}
+{% block content %}
+<!-- HERO SECTION -->
+<section class="hero" aria-label="Homepage hero">
+  {% set hero_video = url_for('static', filename='videos/hero.mp4') %}
+  {# Hero video (static/videos/hero.mp4). If missing, we fall back to a hero image. #}
+  {% set hero_image = url_for('static', filename='images/hero.jpg') %}
+
+  <video id="heroVideo" class="hero-video" autoplay muted loop playsinline>
+    <source src="{{ hero_video }}" type="video/mp4">
+    <!-- video fallback is handled in JS -->
+  </video>
+
+  <img id="heroFallback" class="hero-fallback" src="{{ hero_image }}" alt="Travel background" />
+  <div class="hero-overlay"></div>
+
+  <div class="hero-content container">
+    <div class="hero-copy">
+      <span class="eyebrow">Family travel, reimagined</span>
+      <h1>Family Trip Planner</h1>
+      <p class="tag">Plan. Explore. Make memories together.</p>
+      <div class="hero-actions">
+        <a class="btn" href="/planner">Plan Your Trip</a>
+        <a class="btn ghost" href="#destinations">Explore Destinations</a>
+      </div>
+      <div class="hero-meta">
+        <form class="search" action="/" method="get" aria-label="Search destinations">
+          <input name="q" placeholder="Search destinations..." aria-label="Search input">
+        </form>
+        <div class="countdown" id="countdown" aria-live="polite">Next trip in: -- days</div>
+      </div>
+    </div>
+  </div>
+</section>
+<script>
+// Check if hero video exists; otherwise show fallback image
+(function(){
+  const videoUrl = "{{ url_for('static', filename='videos/hero.mp4') }}";
+  const videoEl = document.getElementById('heroVideo');
+  const imgEl = document.getElementById('heroFallback');
+
+  // Start with hiding image; show if needed
+  if(imgEl) imgEl.style.display = 'none';
+
+  // Try HEAD request to see if video exists
+  fetch(videoUrl, {method: 'HEAD'}).then(res=>{
+    if(!res.ok){
+      if(videoEl) videoEl.style.display = 'none';
+      if(imgEl) imgEl.style.display = 'block';
+    } else {
+      if(imgEl) imgEl.style.display = 'none';
+      if(videoEl) videoEl.style.display = 'block';
+    }
+  }).catch(()=>{
+    if(videoEl) videoEl.style.display = 'none';
+    if(imgEl) imgEl.style.display = 'block';
+  });
+
+  if(videoEl){
+    videoEl.addEventListener('error', ()=>{ if(videoEl) videoEl.style.display='none'; if(imgEl) imgEl.style.display='block'; });
+  }
+})();
+</script>
+
+<!-- ABOUT -->
+<section id="about" class="about glass container">
+  <div class="about-inner">
+    <h2>Why Family Trip Planner?</h2>
+    <p>We make family travel joyful and effortless — curated plans, budget tracking, galleries, and shared itineraries built for families.</p>
+
+    <div class="cards" role="list">
+      <div class="card" role="listitem">
+        <div class="icon">🏝️</div>
+        <strong>Organized Trips</strong>
+        <p>Day-wise itineraries, reminders and packing lists designed for families.</p>
+      </div>
+      <div class="card" role="listitem">
+        <div class="icon">👨‍👩‍👧‍👦</div>
+        <strong>Family Focused</strong>
+        <p>Manage members and preferences for personalized plans.</p>
+      </div>
+      <div class="card" role="listitem">
+        <div class="icon">📸</div>
+        <strong>Memory Vault</strong>
+        <p>Gallery and travel journals to preserve moments.</p>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- POPULAR DESTINATIONS -->
+<section id="destinations" class="destinations container">
+  <h2>Popular Destinations</h2>
+  <div class="grid" aria-live="polite">
+    {% for d in destinations %}
+      <article class="dest">
+        <img loading="lazy" src="{{ d.image }}" alt="{{ d.title }}" width="400" height="280">
+        <div class="dest-body">
+          <h3>{{ d.title }}</h3>
+          <p>{{ d.description[:140] }}{% if d.description|length > 140 %}...{% endif %}</p>
+          <div class="meta">Budget: ${{ d.budget }} • Season: {{ d.season }} • ⭐ {{ d.rating }}</div>
+          <a class="btn small" href="/destination/{{ d.id }}">View Details</a>
+        </div>
+      </article>
+    {% else %}
+      <p>No destinations available yet. Check back soon!</p>
+    {% endfor %}
+  </div>
+</section>
+
+<!-- QUICK LINKS -->
+<section class="quick container">
+  <div class="quick-grid">
+    <a href="/planner" class="quick-card">Trip Planner</a>
+    <a href="/itinerary" class="quick-card">Itinerary</a>
+    <a href="/gallery" class="quick-card">Gallery</a>
+    <a href="/contact" class="quick-card">Contact</a>
+  </div>
+</section>
+
+<!-- ACCESSIBLE FOOTER NOTE (base.html includes footer) -->
+
+<script>
+// Lightweight countdown widget — reads ISO date from localStorage "next_trip" or defaults to 7 days
+(function(){
+  const el = document.getElementById('countdown');
+  const stored = localStorage.getItem('next_trip');
+  const target = stored ? new Date(stored) : new Date(Date.now()+7*24*60*60*1000);
+  function update(){
+    const diff = Math.max(0, target - new Date());
+    const days = Math.floor(diff / (1000*60*60*24));
+    el.textContent = `Next trip in: ${days} day${days!==1?'s':''}`;
+  }
+  update();
+  setInterval(update, 1000*60*30);
+})();
+</script>
+
+{% endblock %}

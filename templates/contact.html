@@ -1,0 +1,18 @@
+{% extends 'base.html' %}
+
+{% block title %}Contact Us - Family Trip Planner{% endblock %}
+
+{% block content %}
+<section class="container" style="padding:32px 0;">
+  <div class="glass" style="max-width:700px;margin:0 auto;padding:32px;">
+    <h2>Contact our travel support team</h2>
+    <p class="text-muted">Have a question or need help with a family trip? Send us a message and we’ll respond within one business day.</p>
+    <form method="post" style="display:grid;gap:16px;margin-top:20px;">
+      <label>Name <input type="text" name="name" required></label>
+      <label>Email <input type="email" name="email" required></label>
+      <label>Message <textarea name="message" rows="5" required></textarea></label>
+      <button class="btn" type="submit">Send Message</button>
+    </form>
+  </div>
+</section>
+{% endblock %}

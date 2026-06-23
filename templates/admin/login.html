@@ -1,0 +1,16 @@
+{% extends 'base.html' %}
+
+{% block title %}Admin Login - Family Trip Planner{% endblock %}
+
+{% block content %}
+<section class="auth container" style="padding:48px 0;">
+  <div class="glass" style="max-width:560px;margin:0 auto;">
+    <h2>Admin Login</h2>
+    <form method="post" action="/admin/login" style="margin-top:18px;">
+      <label>Username <input type="text" name="username" required></label>
+      <label>Password <input type="password" name="password" required></label>
+      <button class="btn" type="submit">Sign in</button>
+    </form>
+  </div>
+</section>
+{% endblock %}

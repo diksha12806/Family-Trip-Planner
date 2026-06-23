@@ -1,0 +1,17 @@
+{% extends 'base.html' %}
+{% block title %}Add Trip - Family Trip Planner{% endblock %}
+{% block content %}
+<section class="container planner">
+  <div class="glass" style="max-width:760px;margin:0 auto;">
+    <h2>Add Trip</h2>
+    <form method="post">
+      <label>Destination <input name="destination" required></label>
+      <label>Start Date <input type="date" name="start_date" required></label>
+      <label>End Date <input type="date" name="end_date" required></label>
+      <label>Budget <input type="number" name="budget" step="0.01"></label>
+      <label>Notes <textarea name="notes"></textarea></label>
+      <button class="btn" type="submit">Save Trip</button>
+    </form>
+  </div>
+</section>
+{% endblock %}

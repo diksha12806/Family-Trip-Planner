@@ -1,0 +1,21 @@
+{% extends 'base.html' %}
+{% block title %}Register - Family Trip Planner{% endblock %}
+{% block content %}
+<section class="auth container" style="padding:48px 0;">
+  <div class="glass" style="max-width:700px;margin:0 auto;display:grid;grid-template-columns:1fr 1fr;gap:18px;align-items:center;">
+    <div style="padding:18px">
+      <h2>Create your account</h2>
+      <p class="text-muted">Join Family Trip Planner to coordinate family trips, save journals, and share memories.</p>
+    </div>
+    <div style="padding:18px;">
+      <form method="post" action="/register">
+        <label>Name <input name="name" required></label>
+        <label>Email <input type="email" name="email" required></label>
+        <label>Password <input type="password" name="password" required></label>
+        <button class="btn" type="submit" style="margin-top:8px;">Register</button>
+      </form>
+      <p style="margin-top:12px;">Already have an account? <a href="/login">Login</a></p>
+    </div>
+  </div>
+</section>
+{% endblock %}

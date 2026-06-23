@@ -1,0 +1,116 @@
+{% extends 'base.html' %}
+
+{% block title %}Trip Planner - Family Trip Planner{% endblock %}
+
+{% block content %}
+<section class="container planner" style="padding:32px 0;">
+  <div class="glass" style="max-width:900px;margin:0 auto;">
+    <header style="display:flex;justify-content:space-between;align-items:center;gap:16px;flex-wrap:wrap;">
+      <div>
+        <h2>Trip Planner</h2>
+        <p class="text-muted">Build your next family adventure with itinerary suggestions, budgets, and activity ideas.</p>
+      </div>
+      <div style="display:flex;gap:12px;flex-wrap:wrap;">
+        <a class="btn" href="/view-trips">My Trips</a>
+        <a class="btn ghost" href="/dashboard">Dashboard</a>
+      </div>
+    </header>
+
+    <div class="planner-grid" style="display:grid;grid-template-columns:1.2fr .8fr;gap:24px;margin-top:24px;">
+      <article class="glass" style="padding:24px;border-radius:18px;">
+        <h3>Plan a personalized family itinerary</h3>
+        <form id="plannerForm" method="post" style="display:grid;gap:16px;margin-top:18px;">
+          <label>Destination <input name="destination" required placeholder="Enter destination"></label>
+          <div style="display:grid;grid-template-columns:1fr 1fr;gap:16px;">
+            <label>Start Date <input type="date" name="start_date" required></label>
+            <label>End Date <input type="date" name="end_date" required></label>
+          </div>
+          <div style="display:grid;grid-template-columns:1fr 1fr;gap:16px;">
+            <label>Family Members <input type="number" name="members" min="1" value="2"></label>
+            <label>Budget <input type="number" name="budget" min="0" step="50" value="1500"></label>
+          </div>
+          <button class="btn" type="submit">Generate Plan</button>
+        </form>
+      </article>
+
+      <aside class="glass" style="padding:24px;border-radius:18px;">
+        <h3>How it works</h3>
+        <ul style="margin-top:16px;line-height:1.75;">
+          <li><strong>Choose your destination</strong> and travel window.</li>
+          <li><strong>Add family size</strong> and budget preferences.</li>
+          <li><strong>Get a day-by-day itinerary</strong> with activities and travel tips.</li>
+          <li><strong>Save your trip</strong> from the dashboard once you’re ready.</li>
+        </ul>
+      </aside>
+    </div>
+
+    <div class="planner-result glass" style="margin-top:24px;padding:24px;border-radius:18px;display:none;" id="plannerResult">
+      <h3>Suggested Itinerary</h3>
+      <div id="itineraryList" style="display:grid;gap:12px;margin-top:16px;"></div>
+      <div style="margin-top:20px;display:flex;gap:12px;flex-wrap:wrap;align-items:center;">
+        <div class="meta" id="budgetSummary" style="font-weight:600;"></div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<script>
+document.addEventListener('DOMContentLoaded', function () {
+  const form = document.getElementById('plannerForm');
+  const result = document.getElementById('plannerResult');
+  const list = document.getElementById('itineraryList');
+  const budgetSummary = document.getElementById('budgetSummary');
+
+  console.log('Planner DOM Ready');
+
+  if (form) {
+    form.addEventListener('submit', function (e) {
+      e.preventDefault();
+      console.log('Generate Button Clicked');
+
+      const formData = new FormData(form);
+
+      fetch('/planner', {
+        method: 'POST',
+        body: formData
+      })
+      .then(function (response) {
+        if (!response.ok) {
+          throw new Error('Planner request failed');
+        }
+        return response.json();
+      })
+      .then(function (json) {
+        console.log('Response:', json);
+
+        if (list) {
+          list.innerHTML = '';
+          if (json.itinerary && Array.isArray(json.itinerary)) {
+            json.itinerary.forEach(function (day) {
+              const card = document.createElement('div');
+              card.className = 'card';
+              card.innerHTML = '<strong>Day ' + day.day + '</strong><ul>' + day.activities.map(function (activity) {
+                return '<li>' + activity + '</li>';
+              }).join('') + '</ul>';
+              list.appendChild(card);
+            });
+          }
+        }
+
+        if (budgetSummary) {
+          budgetSummary.textContent = 'Estimated budget: $' + (json.est_budget || 0);
+        }
+
+        if (result) {
+          result.style.display = 'block';
+        }
+      })
+      .catch(function (error) {
+        console.error(error);
+        alert('Planner Error');
+      });
+    });
+  }
+});
+</script>
+{% endblock %}
